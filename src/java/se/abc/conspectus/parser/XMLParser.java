@@ -1,9 +1,12 @@
-package se.abc.thesaurus;
+package se.abc.conspectus.parser;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.xml.stream.XMLInputFactory;
@@ -11,55 +14,55 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-final class Parser {
+public final class XMLParser implements DefinitionsParser {
 
-	Parser() {
+	public XMLParser() {
 	}
 
-	Map<String, Set<String>> collect(final InputStream thesaurus)
-			throws XMLStreamException {
+	@Override
+	public Map<String, Set<String>> parse(final Path definitions) throws IOException {
 		final XMLInputFactory factory = XMLInputFactory.newInstance();
-		final XMLStreamReader reader = factory.createXMLStreamReader(thesaurus);
 
-		final Map<String, Set<String>> map = new TreeMap<>();
+		try (InputStream stream = new FileInputStream(definitions.toFile())) {
+			final XMLStreamReader reader = factory.createXMLStreamReader(stream);
+			final Map<String, Set<String>> map = new HashMap<>();
 
-		String text = null;
-		Set<String> synonyms = null;
-		while (reader.hasNext()) {
-			final int event = reader.next();
+			String text = null;
+			Set<String> synonyms = null;
+			while (reader.hasNext()) {
+				final int event = reader.next();
 
-			switch (event) {
-			case XMLStreamConstants.END_ELEMENT: {
-				if ("w1".equals(reader.getLocalName())) {
-					if (text == null)
-						throw new RuntimeException(
-								"Invalid record: no definiendum.");
+				switch (event) {
+				case XMLStreamConstants.END_ELEMENT: {
+					if ("w1".equals(reader.getLocalName())) {
+						if (text == null)
+							throw new RuntimeException("Invalid record: no definiendum.");
 
-					synonyms = map.get(text);
-					if (synonyms == null) {
-						synonyms = new TreeSet<String>();
-						map.put(text, synonyms);
+						synonyms = map.get(text);
+						if (synonyms == null) {
+							synonyms = new TreeSet<String>();
+							map.put(text, synonyms);
+						}
 					}
-				}
-				if ("w2".equals(reader.getLocalName())) {
-					if (text == null)
-						throw new RuntimeException(
-								"Invalid record: no definiens.");
-					if (synonyms == null)
-						throw new RuntimeException(
-								"Invalid record: definiens lacks definiendum.");
+					if ("w2".equals(reader.getLocalName())) {
+						if (text == null)
+							throw new RuntimeException("Invalid record: no definiens.");
+						if (synonyms == null)
+							throw new RuntimeException("Invalid record: definiens lacks definiendum.");
 
-					synonyms.add(text);
+						synonyms.add(text);
+					}
+					break;
 				}
-				break;
+				case XMLStreamConstants.CHARACTERS: {
+					text = reader.getText().trim();
+					break;
+				}
+				}
 			}
-			case XMLStreamConstants.CHARACTERS: {
-				text = reader.getText().trim();
-				break;
-			}
-			}
+			return map;
+		} catch (XMLStreamException e) {
+			throw new IOException(e.getMessage(), e);
 		}
-
-		return map;
 	}
 }

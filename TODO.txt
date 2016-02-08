@@ -1,4 +1,0 @@
-* Implement logging.
-* Ant file.
-* Test cases.
-* Limit response length.

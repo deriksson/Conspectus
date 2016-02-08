@@ -1,6 +1,7 @@
 CC=gcc
 CFLAGS=-I.
 DEPS = query.h
+INSTALL = /usr/bin/install -c
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -13,3 +14,6 @@ clean:
 
 distclean: clean
 	rm -f query
+
+install: query
+	$(INSTALL) query /usr/local/bin/
