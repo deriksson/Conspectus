@@ -1,8 +1,0 @@
-#!/bin/bash
-# Looks up English synonyms in local text file.
-#
-# Usage:
-# ensyn <search term> 
-#
-HERE="$(dirname "${BASH_SOURCE[0]}")"
-$HERE/synonyms.sh english-synonyms.txt "$1"
