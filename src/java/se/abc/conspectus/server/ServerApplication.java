@@ -2,10 +2,12 @@ package se.abc.conspectus.server;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +26,8 @@ public final class ServerApplication {
 
 	public static void main(String[] arg) {
 		if (arg.length != 1) {
-			final String message = String.format("Usage: java %s <configuration file>", Server.class.getName());
+			final String message = String.format("Usage: java %s <configuration file>",
+					ServerApplication.class.getName());
 			logger.log(Level.SEVERE, message);
 			System.err.println(message);
 			System.exit(1);
@@ -36,9 +39,9 @@ public final class ServerApplication {
 			properties.loadFromXML(in);
 			in.close();
 
-			final DefinitionsParser factory = (DefinitionsParser) Class.forName(properties.getProperty("data.parser"))
-					.newInstance();
-			final Map<String, Set<String>> thesaurus = factory.parse(Paths.get(properties.getProperty("data.file")));
+			final Function<Path, Map<String, Set<String>>> factory = (DefinitionsParser) Class
+					.forName(properties.getProperty("data.parser")).newInstance();
+			final Map<String, Set<String>> thesaurus = factory.apply(Paths.get(properties.getProperty("data.file")));
 
 			final Server server = new Server(Integer.parseInt(properties.getProperty("server.port")), thesaurus);
 			/*

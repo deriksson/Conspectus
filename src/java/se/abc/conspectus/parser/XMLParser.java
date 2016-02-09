@@ -20,7 +20,7 @@ public final class XMLParser implements DefinitionsParser {
 	}
 
 	@Override
-	public Map<String, Set<String>> parse(final Path definitions) throws IOException {
+	public Map<String, Set<String>> apply(final Path definitions)  {
 		final XMLInputFactory factory = XMLInputFactory.newInstance();
 
 		try (InputStream stream = new FileInputStream(definitions.toFile())) {
@@ -61,8 +61,8 @@ public final class XMLParser implements DefinitionsParser {
 				}
 			}
 			return map;
-		} catch (XMLStreamException e) {
-			throw new IOException(e.getMessage(), e);
+		} catch (XMLStreamException|IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 }

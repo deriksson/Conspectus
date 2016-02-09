@@ -1,7 +1,5 @@
 package se.abc.conspectus.client;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
@@ -27,17 +25,14 @@ public final class ExportApplication {
 
 		try {
 			final DefinitionsParser factory = (DefinitionsParser) Class.forName(args[1]).newInstance();
-			final Map<String, Set<String>> thesaurus = factory.parse(Paths.get(args[0]));
+			final Map<String, Set<String>> thesaurus = factory.apply(Paths.get(args[0]));
 			thesaurus.entrySet().stream().sorted()
 					.map(entry -> String.format("%s: %s", entry.getKey(), String.join(", ", entry.getValue())))
 					.forEachOrdered(System.out::println);
-		} catch (FileNotFoundException e) {
-			System.err.printf("File not found: \"%s\".\n", args[0], e.getMessage());
+		} catch (RuntimeException e) {
+			System.err.printf("Unable to parse file: \"%s\".\n", args[0], e.getMessage());
 			System.exit(2);
-		} catch (IOException e) {
-			System.err.printf("Error parsing file: \"%s\". %s\n", args[0], e.getMessage());
-			System.exit(3);
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+		}  catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			System.err.printf("No such parser: %s.\n", args[0], e.getMessage());
 			System.exit(4);
 		}

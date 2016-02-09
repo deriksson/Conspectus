@@ -15,8 +15,11 @@ public final class CSVParser implements DefinitionsParser {
 	public CSVParser() {
 	}
 
+	/**
+	 * @throws RuntimeException If the file can not be read.
+	 */
 	@Override
-	public Map<String, Set<String>> parse(final Path definitions) throws IOException {
+	public Map<String, Set<String>> apply(final Path definitions) {
 		try (Stream<String> stream = Files.lines(definitions)) {
 			/*
 			 * HashMap gives slightly faster lookups than TreeMap in this
@@ -39,6 +42,8 @@ public final class CSVParser implements DefinitionsParser {
 			});
 
 			return map;
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(),e);
 		}
 	}
 }
