@@ -7,6 +7,7 @@
  */
 #include "query.h"
 #include <stdio.h> 
+#include <strings.h> /* bcopy */
 #include <string.h> 
 #include <stdlib.h> 
 #include <unistd.h>
@@ -20,7 +21,8 @@ int main(int argc, char **argv) {
   char *query, *hostname;
   struct hostent *server;
   struct sockaddr_in serveraddr;  
-  int portno, socketfd, slen=sizeof(serveraddr);
+  int portno, socketfd;
+  socklen_t slen=sizeof(serveraddr);
   char buf[BUFLEN];
   
   /* Check command line arguments. */
@@ -39,14 +41,14 @@ int main(int argc, char **argv) {
   /* Get the server's DNS entry */
   server = gethostbyname(hostname);
   if (server == NULL) {
-    fprintf(stderr,"No such host as %s\n", hostname);
+    fprintf(stderr,"No such host: %s\n", hostname);
     exit(1);
   }
 
   memset((char *) &serveraddr, 0, sizeof(serveraddr));
   serveraddr.sin_family = AF_INET;
   serveraddr.sin_port = htons(portno);
-  bcopy((char *)server->h_addr, 
+  bcopy((char *)server->h_addr_list[0], 
 	(char *)&serveraddr.sin_addr.s_addr, server->h_length);
 
   /* Send the query. */

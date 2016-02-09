@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS=-I. -std=c99 -pedantic
 DEPS = query.h
 INSTALL = /usr/bin/install -c
 
