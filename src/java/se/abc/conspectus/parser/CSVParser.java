@@ -16,7 +16,8 @@ public final class CSVParser implements DefinitionsParser {
 	}
 
 	/**
-	 * @throws RuntimeException If the file can not be read.
+	 * @throws RuntimeException
+	 *             If the file can not be read.
 	 */
 	@Override
 	public Map<String, Set<String>> apply(final Path definitions) {
@@ -43,7 +44,7 @@ public final class CSVParser implements DefinitionsParser {
 
 			return map;
 		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(),e);
+			throw new RuntimeException("Unable to parse file: " + e.getMessage(), e);
 		}
 	}
 }

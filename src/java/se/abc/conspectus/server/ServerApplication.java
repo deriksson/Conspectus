@@ -39,7 +39,7 @@ public final class ServerApplication {
 			properties.loadFromXML(in);
 			in.close();
 
-			final Function<Path, Map<String, Set<String>>> factory = (DefinitionsParser) Class
+			final Function<? super Path, ? extends Map<String, Set<String>>> factory = (DefinitionsParser) Class
 					.forName(properties.getProperty("data.parser")).newInstance();
 			final Map<String, Set<String>> thesaurus = factory.apply(Paths.get(properties.getProperty("data.file")));
 

@@ -3,6 +3,6 @@
 <properties>
   <comment>Settings for the Conspectus UDP definitions server</comment>
   <entry key="server.port">5006</entry>
-  <entry key="data.file">data/mobythes.txt</entry>
+  <entry key="data.file">data/thesaurus-en.txt</entry>
   <entry key="data.parser">se.abc.conspectus.parser.CSVParser</entry>
 </properties>
