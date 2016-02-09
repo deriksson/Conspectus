@@ -1,13 +1,13 @@
-# Conspectus: A simple UDP server for querying a definitions database
+# Conspectus: A Simple UDP Server for Querying a Definitions Database
 
-This project creates a simple UDP server.
+This project creates a simple Java UDP server, used to query a database of definitions. Each key (definiendum) in the database may correspond to one or several explanations (definientia), and each response from the server contains a lists of all definientia for the definiendum submitted in the query. This structure is typical of a thesaurus, and the server may for instance be used to look up synonyms. The database may also contain just one definiens per definiendum, in which case the functionality is more similar to that of a dictionary.
 
 ## Installation
-
-  ant
-  update-rc.d myserver defaults
+1. Compile the source code and create a distribution archive:  
+  `ant archive`
+2.  update-rc.d myserver defaults
   
-## Running the server
+## Usage
 
 Usage:
 
@@ -19,7 +19,7 @@ java -Djava.util.logging.config.file=src/config/logging.properties -classpath di
 
 java -Djava.util.logging.config.file=src/config/logging.properties -classpath dist/lib/conspectus-20160208.jar se.abc.conspectus.server.ServerApplication src/config/conspectus-en.xml
 
-Once the server is running, you can query it like this, uing Netcat:
+Once the server is running, you can query it like this, using Netcat:
 
 echo -n "övning" | nc -q 1 -u localhost 5005 ; echo
 
