@@ -31,6 +31,7 @@
 			<fileset dir="${dist}/lib" includes="*.jar"/>
 			<fileset dir="data" includes="thesaurus-*.*"/>
 			<fileset dir="${src}/config"/>
+			<fileset dir="${src}/sh/" includes="conspectus"/>
 		</zip>
 	</target>
 
