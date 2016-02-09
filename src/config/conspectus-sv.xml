@@ -3,6 +3,7 @@
 <properties>
   <comment>Settings for the Conspectus UDP definitions server</comment>
   <entry key="server.port">5005</entry>
-  <entry key="data.file">data/synpairs-2013.xml</entry>
+  <!-- <entry key="data.file">/opt/conspectus/thesaurus-sv.xml</entry> -->
+  <entry key="data.file">data/thesaurus-sv.xml</entry>
   <entry key="data.parser">se.abc.conspectus.parser.XMLParser</entry>
 </properties>
