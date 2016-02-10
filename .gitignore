@@ -1,7 +1,7 @@
 /build/
 /doc/
 /dist/
-/data/
+#/data/
 *~
 .classpath
 .project
