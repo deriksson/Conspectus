@@ -26,15 +26,15 @@ public final class ExportApplication {
 		try {
 			final DefinitionsParser factory = (DefinitionsParser) Class.forName(args[1]).newInstance();
 			final Map<String, Set<String>> thesaurus = factory.apply(Paths.get(args[0]));
-			thesaurus.entrySet().stream().sorted()
+			thesaurus.entrySet().stream().sorted((lhs, rhs) -> lhs.getKey().compareToIgnoreCase(rhs.getKey()))
 					.map(entry -> String.format("%s: %s", entry.getKey(), String.join(", ", entry.getValue())))
 					.forEachOrdered(System.out::println);
 		} catch (RuntimeException e) {
 			System.err.printf("Unable to parse file: \"%s\".\n", args[0], e.getMessage());
 			System.exit(2);
-		}  catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			System.err.printf("No such parser: %s.\n", args[0], e.getMessage());
-			System.exit(4);
+			System.exit(3);
 		}
 	}
 }
