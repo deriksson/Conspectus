@@ -6,23 +6,22 @@
  * query <hostname> <port> <query>
  */
 #include "query.h"
-#include <stdio.h> 
+#include <stdio.h>  /* fprintf, perror */
 #include <strings.h> /* bcopy */
-#include <string.h> 
-#include <stdlib.h> 
-#include <unistd.h>
+#include <string.h> /* memset */
+#include <stdlib.h> /* exit */
+#include <unistd.h> /* close */
 #include <netdb.h> /* gethostbyname */
-#include <arpa/inet.h>
-#include <sys/socket.h>
 
 #define BUFLEN 1024 
  
 int main(int argc, char **argv) {
+  
   char *query, *hostname;
   struct hostent *server;
   struct sockaddr_in serveraddr;  
   int portno, socketfd;
-  socklen_t slen=sizeof(serveraddr);
+  socklen_t slen = sizeof(serveraddr);
   char buf[BUFLEN];
   
   /* Check command line arguments. */
@@ -38,10 +37,10 @@ int main(int argc, char **argv) {
   if ((socketfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) 
     error("Error opening socket.");
   
-  /* Get the server's DNS entry */
+  /* Get the server's DNS entry. */
   server = gethostbyname(hostname);
   if (server == NULL) {
-    fprintf(stderr,"No such host: %s\n", hostname);
+    fprintf(stderr, "No such host: %s\n", hostname);
     exit(1);
   }
 
@@ -52,17 +51,19 @@ int main(int argc, char **argv) {
 	(char *)&serveraddr.sin_addr.s_addr, server->h_length);
 
   /* Send the query. */
-  if (sendto(socketfd, query, strlen(query) , 0 , (struct sockaddr *) &serveraddr, slen)==-1) 
+  if (sendto(socketfd, query, strlen(query), 0, (struct sockaddr *) &serveraddr, slen) ==-1) 
       error("Error sending query.");
 
   /* Handle the reply. */
-  memset(buf,'\0', BUFLEN);
+  memset(buf, '\0', BUFLEN);
   if (recvfrom(socketfd, buf, BUFLEN, 0, (struct sockaddr *) &serveraddr, &slen) == -1) 
     error("Error receiving reply.");
-         
-  puts(buf);
+
+  if (strlen(buf) > 0)
+    puts(buf);
 
   close(socketfd);
+  
   return 0;
 }
 
