@@ -6,12 +6,12 @@
  * query <hostname> <port> <query>
  */
 #include "query.h"
-#include <stdio.h>  /* fprintf, perror */
+#include <stdio.h>   /* fprintf, perror */
 #include <strings.h> /* bcopy */
-#include <string.h> /* memset */
-#include <stdlib.h> /* exit */
-#include <unistd.h> /* close */
-#include <netdb.h> /* gethostbyname */
+#include <string.h>  /* memset */
+#include <stdlib.h>  /* exit */
+#include <unistd.h>  /* close */
+#include <netdb.h>   /* gethostbyname */
 
 #define BUFLEN 1024 
  
