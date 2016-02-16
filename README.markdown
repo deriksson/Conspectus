@@ -1,6 +1,6 @@
-# Conspectus: A Fast Java UDP Server for Querying a Definitions Database
+# Conspectus: A Fast Java UDP Server for Querying Definitions Database
 
-This project creates a simple Java UDP server, used to query a database of definitions. Each key (definiendum) in the database may correspond to one or several explanations (definientia), and each response from the server contains a lists of all definientia for the definiendum submitted in the query. This structure is typical of a thesaurus, and the server may for instance be used to look up synonyms. The database may also contain just one definiens per definiendum, in which case the functionality is more similar to that of a dictionary.
+This project creates a simple Java UDP server, used to query a database of definitions. Each key (definiendum) in the database may correspond to one or several explanations (definientia), and each response from the server contains a list of all definientia for the definiendum submitted in the query. This structure is typical of a thesaurus, and the server may, for instance, be used to look up synonyms. The database may also contain just one definiens per definiendum, in which case the functionality is more similar to that of a dictionary.
 
 ## Installation
 
