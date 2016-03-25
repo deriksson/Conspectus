@@ -66,7 +66,26 @@ The built in XML parser accepts any valid XML that contains sibling elements wit
 An example of this structure is Professor Viggo Kann's Synlex (cf. <http://folkets-lexikon.csc.kth.se/synlex.html>), which is freely available here: <http://folkets-lexikon.csc.kth.se/lexikon/synpairs.xml>. Synlex is a Swedish language thesaurus. There is a copy in the data directory: `thesaurus-sv.xml`.
 
 ### Text File Parser
-The text file parser reads a file consisting of one record per line. Each record is a list of entries separated by commas, but the number of entries per record may differ. The first entry of each record is the key value (definiendum).
+
+Two different text file parsers are included. The parser "CSVParser"
+reads a file consisting of one record per line. Each record is a list
+of entries separated by commas, but the number of entries per record
+may differ. The first entry of each record is the key value
+(definiendum).
+
+The parser "ThesaurusParser"handles text files containing records like
+the following. The records are separated by a line feed character.
+
+    <key>:<element1>,<element 2>,<element n>
+
+A sample record: 
+
+    zone:area,bailiwick,belt
+
+There is an English language thesaurus text file in this format in the
+data directory: `thesaurus-en_utf8.txt`. The data has been extracted
+from the Moby lexicon project, which is in the public domain
+(c.f. http://icon.shef.ac.uk/Moby/).
 
 ### Export
 There is a data export command line program, that writes the database to a text file. The output text file has the following structure:  
