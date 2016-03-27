@@ -32,7 +32,7 @@ with the following command on Debian Linux distributions.
 The program may be tested on a Linux platform using Wine with a
 command like the following:
 
-  `wine query.exe localhost 5005 bra`
+  `wine query.exe localhost 5005 good`
 
 The program outputs UTF 8. Issue the following command to use this
 code page in an NT console window.
