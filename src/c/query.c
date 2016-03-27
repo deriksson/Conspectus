@@ -9,11 +9,17 @@
 #include "query.h"
 
 #include <stdio.h>   /* fprintf, perror */
-#include <strings.h> /* bcopy           */
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <windef.h>
+#pragma comment(lib, "ws2_32.lib") /* Winsock Library */
+#else
 #include <string.h>  /* memset          */
 #include <stdlib.h>  /* exit            */
 #include <unistd.h>  /* close           */
 #include <netdb.h>   /* gethostbyname   */
+#endif
 
 #define BUFLEN 15000 
  
@@ -29,7 +35,14 @@ int main(int argc, char **argv) {
   struct hostent *server;
   struct sockaddr_in serveraddr;  
   int portno, socketfd;
+  
+#ifdef _WIN32
+  WSADATA wsa;
+  int slen = sizeof(serveraddr);
+#else
   socklen_t slen = sizeof(serveraddr);
+#endif
+
   char buf[BUFLEN];
   
   /* Check command line arguments. */
@@ -37,7 +50,15 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Usage: %s <hostname> <port> <query>\n", argv[0]);
     exit(1);
   }
-   
+
+#ifdef _WIN32
+  /* Initialise winsock. */
+  if (WSAStartup(MAKEWORD(2,2),&wsa) != 0) {
+    printf("Failed. Error Code : %d.\n", WSAGetLastError());
+    exit(EXIT_FAILURE);
+  }
+#endif
+ 
   portno = atoi(argv[2]);
 
   if ((socketfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) 
@@ -53,7 +74,7 @@ int main(int argc, char **argv) {
   memset((char *) &serveraddr, 0, sizeof(serveraddr));
   serveraddr.sin_family = AF_INET;
   serveraddr.sin_port = htons(portno);
-  bcopy((char *)server->h_addr_list[0], 
+  memcpy((char *)server->h_addr_list[0], 
 	(char *)&serveraddr.sin_addr.s_addr, server->h_length);
 
   /* Send the query. */
@@ -68,7 +89,12 @@ int main(int argc, char **argv) {
   if (strlen(buf) > 0)
     puts(buf);
 
+#ifdef _WIN32
+  closesocket(socketfd);
+  WSACleanup();
+#else
   close(socketfd);
+#endif
 
   return 0;
 }

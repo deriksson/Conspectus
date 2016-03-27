@@ -1,0 +1,15 @@
+CC=i686-w64-mingw32-gcc
+CFLAGS=-I. -std=c11 -pedantic
+DEPS = query.h
+
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+query.exe: query.o
+	$(CC) -o query.exe query.o -I. -lwsock32
+
+clean:
+	rm -f *.o *~
+
+distclean: clean
+	rm -f query.exe
