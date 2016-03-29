@@ -1,12 +1,13 @@
 CC=i686-w64-mingw32-gcc
 CFLAGS=-I. -std=c11 -pedantic
 DEPS = query.h
+OBJ=query.o error-nt.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-query.exe: query.o
-	$(CC) -o query.exe query.o -I. -lwsock32
+query.exe: $(OBJ)
+	$(CC) -o query.exe $(OBJ) -I. -lwsock32
 
 clean:
 	rm -f *.o *~

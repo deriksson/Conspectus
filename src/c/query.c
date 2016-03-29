@@ -7,18 +7,18 @@
  */
 
 #include "query.h"
-
-#include <stdio.h>   /* fprintf, perror */
+#include <stdio.h>   /* fprintf, printf, perror */
 
 #ifdef _WIN32
-#include <winsock2.h>
-#include <windef.h>
-#pragma comment(lib, "ws2_32.lib") /* Winsock Library */
+#  include <winsock2.h>
+#  include <windef.h>
+#  pragma comment(lib, "ws2_32.lib") /* Winsock Library */
 #else
-#include <string.h>  /* memset          */
-#include <stdlib.h>  /* exit            */
-#include <unistd.h>  /* close           */
-#include <netdb.h>   /* gethostbyname   */
+#  include <string.h>    /* memset               */
+#  include <stdlib.h>    /* exit                 */
+#  include <unistd.h>    /* close                */
+#  include <netdb.h>     /* gethostbyname        */
+#  include <arpa/inet.h> /* inet_addr, inet_ntoa */
 #endif
 
 #define BUFLEN 15000 
@@ -53,10 +53,8 @@ int main(int argc, char **argv) {
 
 #ifdef _WIN32
   /* Initialise winsock. */
-  if (WSAStartup(MAKEWORD(2,2),&wsa) != 0) {
-    printf("Failed. Error Code : %d.\n", WSAGetLastError());
-    exit(EXIT_FAILURE);
-  }
+  if (WSAStartup(MAKEWORD(2,2),&wsa) != 0) 
+    error("Initialisation failed.");
 #endif
  
   portno = atoi(argv[2]);
@@ -65,20 +63,17 @@ int main(int argc, char **argv) {
     error("Error opening socket.");
   
   /* Get the server's DNS entry. */
-  server = gethostbyname(argv[1]);
-  if (server == NULL) {
-    fprintf(stderr, "No such host: %s\n", argv[1]);
-    exit(1);
-  }
+  if ((server = gethostbyname(argv[1])) == NULL)
+    error("No such host.");
 
   memset((char *) &serveraddr, 0, sizeof(serveraddr));
   serveraddr.sin_family = AF_INET;
   serveraddr.sin_port = htons(portno);
-  memcpy((char *)server->h_addr_list[0], 
-	(char *)&serveraddr.sin_addr.s_addr, server->h_length);
-
+  serveraddr.sin_addr.s_addr =
+    inet_addr(inet_ntoa(*(struct in_addr *)*server->h_addr_list));
+ 
   /* Send the query. */
-  if (sendto(socketfd, argv[3], strlen(argv[3]), 0, (struct sockaddr *) &serveraddr, slen) ==-1) 
+  if (sendto(socketfd, argv[3], strlen(argv[3]), 0, (struct sockaddr *) &serveraddr, slen) == -1) 
       error("Error sending query.");
 
   /* Handle the reply. */
@@ -98,9 +93,3 @@ int main(int argc, char **argv) {
 
   return 0;
 }
-
-void error(char *s) {
-    perror(s);
-    exit(1);
-}
- 
